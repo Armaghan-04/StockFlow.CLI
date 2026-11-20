@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "d95e73c9-4474-4228-9c2b-8f1bb0d4fbf9",
+    "ProductId": "c65ad62e-65fc-4e3f-81dc-3dad8be30bd7",
+    "SKU": "SKU-100",
+    "MovementType": 0,
+    "Quantity": 10,
+    "Timestamp": "2026-11-20T12:12:23.5575012Z"
+  },
+  {
+    "Id": "c208a541-b93f-4ad1-8913-dab7b961805d",
+    "ProductId": "4a8115d4-c42d-42e9-a1b5-a8aa6d3dec3b",
+    "SKU": "MOUSE-200",
+    "MovementType": 0,
+    "Quantity": 30,
+    "Timestamp": "2026-11-20T12:12:23.678634Z"
+  },
+  {
+    "Id": "0b184447-bb0d-448d-a682-aeda085e6d2b",
+    "ProductId": "5295cf81-80d8-4991-9fdc-60bd12e656ef",
+    "SKU": "CABLE-300",
+    "MovementType": 0,
+    "Quantity": 100,
+    "Timestamp": "2026-11-20T12:12:23.6807937Z"
+  },
+  {
+    "Id": "42299a5a-f851-49ea-bb37-f6abbeed1a2e",
+    "ProductId": "d5fd07e9-b4b2-4244-8d6e-d3659bf0a2df",
+    "SKU": "HUB-400",
+    "MovementType": 0,
+    "Quantity": 2,
+    "Timestamp": "2026-11-20T12:12:23.6917993Z"
+  },
+  {
+    "Id": "124045fa-4b1d-44f5-bb4e-f9397ec52673",
+    "ProductId": "c65ad62e-65fc-4e3f-81dc-3dad8be30bd7",
+    "SKU": "SKU-100",
+    "MovementType": 0,
+    "Quantity": 5,
+    "Timestamp": "2026-11-20T12:20:00.6689262Z"
+  },
+  {
+    "Id": "0b5bfc6d-3845-4c8f-9a00-a39205a86bd8",
+    "ProductId": "c65ad62e-65fc-4e3f-81dc-3dad8be30bd7",
+    "SKU": "SKU-100",
+    "MovementType": 1,
+    "Quantity": 3,
+    "Timestamp": "2026-11-20T12:20:00.6899449Z"
+  },
+  {
+    "Id": "f7a73c91-d2f9-4f6e-a7c0-3bb71e54823b",
+    "ProductId": "39b3348f-c869-4297-8a48-3767a777f234",
+    "SKU": "SKU-103",
+    "MovementType": 0,
+    "Quantity": 7,
+    "Timestamp": "2026-11-20T12:20:00.706769Z"
+  }
+]

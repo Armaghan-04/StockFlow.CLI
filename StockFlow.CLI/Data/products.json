@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "c65ad62e-65fc-4e3f-81dc-3dad8be30bd7",
+    "Name": "Adjustable Laptop Stand",
+    "SKU": "SKU-100",
+    "Price": 59.99,
+    "Quantity": 12,
+    "IsDeleted": false
+  },
+  {
+    "Id": "39b3348f-c869-4297-8a48-3767a777f234",
+    "Name": "Laptop Screen Cleaning Kit",
+    "SKU": "SKU-103",
+    "Price": 7.50,
+    "Quantity": 7,
+    "IsDeleted": false
+  },
+  {
+    "Id": "4a8115d4-c42d-42e9-a1b5-a8aa6d3dec3b",
+    "Name": "Wireless Optical Mouse",
+    "SKU": "MOUSE-200",
+    "Price": 25.50,
+    "Quantity": 30,
+    "IsDeleted": false
+  },
+  {
+    "Id": "5295cf81-80d8-4991-9fdc-60bd12e656ef",
+    "Name": "USB-C Charging Cable",
+    "SKU": "CABLE-300",
+    "Price": 5.00,
+    "Quantity": 100,
+    "IsDeleted": false
+  },
+  {
+    "Id": "d5fd07e9-b4b2-4244-8d6e-d3659bf0a2df",
+    "Name": "4-Port USB Hub",
+    "SKU": "HUB-400",
+    "Price": 75.00,
+    "Quantity": 2,
+    "IsDeleted": false
+  }
+]

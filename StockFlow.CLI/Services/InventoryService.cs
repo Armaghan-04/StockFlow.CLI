@@ -61,15 +61,17 @@ namespace StockFlow.CLI.Services
 
         public void ViewProducts()
         {
-            if (!ActiveProducts.Any())
+            List<Product> activeProducts = [.. ActiveProducts];
+
+            if (activeProducts.Count == 0)
             {
                 Console.WriteLine("No active products available.");
                 return;
             }
 
-            Console.WriteLine($"Total Products: {ActiveProducts.Count()}");
+            Console.WriteLine($"Total Products: {activeProducts.Count}");
 
-            foreach (Product product in ActiveProducts)
+            foreach (Product product in activeProducts)
             {
                 Console.WriteLine($"Product ID: {product.Id}");
                 Console.WriteLine($"Name: {product.Name}");
@@ -194,15 +196,15 @@ namespace StockFlow.CLI.Services
 
         public void LowStockReport(int threshold)
         {
-            if (ActiveProducts.Count() == 0)
-            {
-                Console.WriteLine("No products available.");
-                return;
-            }
-
             if (threshold < 0)
             {
                 Console.WriteLine("Threshold cannot be negative.");
+                return;
+            }
+
+            if (!ActiveProducts.Any())
+            {
+                Console.WriteLine("No products available.");
                 return;
             }
 
@@ -238,11 +240,9 @@ namespace StockFlow.CLI.Services
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return [];
 
-            List<Product> matchingProducts = [.. ActiveProducts
+            return [.. ActiveProducts
                 .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                             p.SKU.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))];
-
-            return matchingProducts;
         }
 
         public void UpdateProduct(string sku, string name, decimal price)

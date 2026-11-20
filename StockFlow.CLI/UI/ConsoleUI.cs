@@ -76,7 +76,6 @@ namespace StockFlow.CLI.UI
 
         private void Greeting()
         {
-
             Console.Write("\nEnter your name: ");
             string name = Console.ReadLine() ?? "";
 
@@ -114,7 +113,12 @@ namespace StockFlow.CLI.UI
             Console.Write("Enter product name: ");
             string name = Console.ReadLine()?.Trim() ?? "";
 
-            Console.Write("Enter product SKU: ");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Console.WriteLine("Product name is required. Product not added.");
+                return;
+            }
+
             string sku = ReadSku();
 
             Console.Write("Enter product price: ");
@@ -193,7 +197,6 @@ namespace StockFlow.CLI.UI
                 case 2:
                     string historySku = ReadSku();
                     _inventoryService.ViewStockHistory(historySku);
-
                     break;
 
                 default:
@@ -225,6 +228,12 @@ namespace StockFlow.CLI.UI
             Console.WriteLine("Enter a search term (name or SKU): ");
 
             string searchTerm = Console.ReadLine()?.Trim() ?? "";
+
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                Console.WriteLine("Search term cannot be empty.");
+                return;
+            }
 
             List<Product> matchingProducts = _inventoryService.SearchProducts(searchTerm);
 
@@ -262,7 +271,7 @@ namespace StockFlow.CLI.UI
                 return;
             }
 
-            Product? product;
+            Product product;
 
             try
             {
@@ -499,6 +508,5 @@ namespace StockFlow.CLI.UI
                 Console.WriteLine("Please enter a positive integer.");
             }
         }
-
     }
 }
