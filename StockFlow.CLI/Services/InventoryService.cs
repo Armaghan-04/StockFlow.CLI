@@ -9,6 +9,15 @@ namespace StockFlow.CLI.Services
 
         private readonly List<StockMovement> _stockMovements = [];
 
+        private readonly JsonFileService _jsonFileService = new();
+
+        public InventoryService()
+        {
+            _products.AddRange(_jsonFileService.LoadProducts());
+
+            _stockMovements.AddRange(_jsonFileService.LoadStockMovements());
+        }
+
         public void AddProduct(string name, string sku, decimal price, int quantity)
         {
             try
@@ -28,11 +37,22 @@ namespace StockFlow.CLI.Services
                     _stockMovements
                         .Add(new StockMovement(product.Id, product.SKU, MovementType.In, quantity));
 
+                _jsonFileService.SaveProducts(_products);
+                _jsonFileService.SaveStockMovements(_stockMovements);
+
                 Console.WriteLine($"\nProduct '{product.Name}' added successfully!");
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error saving inventory data: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission error while saving data: {ex.Message}");
             }
         }
 
@@ -68,6 +88,9 @@ namespace StockFlow.CLI.Services
                 _stockMovements
                     .Add(new StockMovement(product.Id, product.SKU, MovementType.In, quantity));
 
+                _jsonFileService.SaveProducts(_products);
+                _jsonFileService.SaveStockMovements(_stockMovements);
+
                 Console.WriteLine($"Stock added successfully. New quantity: {product.Quantity}");
             }
             catch (ArgumentException ex)
@@ -77,6 +100,14 @@ namespace StockFlow.CLI.Services
             catch (InvalidOperationException ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error saving inventory data: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission error while saving data: {ex.Message}");
             }
         }
 
@@ -91,6 +122,9 @@ namespace StockFlow.CLI.Services
                 _stockMovements
                     .Add(new StockMovement(product.Id, product.SKU, MovementType.Out, quantity));
 
+                _jsonFileService.SaveProducts(_products);
+                _jsonFileService.SaveStockMovements(_stockMovements);
+
                 Console.WriteLine($"Stock removed successfully.\nNew quantity: {product.Quantity}");
             }
             catch (ArgumentException ex)
@@ -100,6 +134,14 @@ namespace StockFlow.CLI.Services
             catch (InvalidOperationException ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error saving inventory data: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission error while saving data: {ex.Message}");
             }
         }
 
