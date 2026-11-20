@@ -11,6 +11,9 @@ namespace StockFlow.CLI.Services
 
         private readonly JsonFileService _jsonFileService = new();
 
+        private IEnumerable<Product> ActiveProducts =>
+            _products.Where(p => !p.IsDeleted);
+
         public InventoryService()
         {
             _products.AddRange(_jsonFileService.LoadProducts());
@@ -58,15 +61,15 @@ namespace StockFlow.CLI.Services
 
         public void ViewProducts()
         {
-            if (_products.Count == 0)
+            if (!ActiveProducts.Any())
             {
-                Console.WriteLine("No products available.");
+                Console.WriteLine("No active products available.");
                 return;
             }
 
-            Console.WriteLine($"Total Products: {_products.Count}");
+            Console.WriteLine($"Total Products: {ActiveProducts.Count()}");
 
-            foreach (Product product in _products)
+            foreach (Product product in ActiveProducts)
             {
                 Console.WriteLine($"Product ID: {product.Id}");
                 Console.WriteLine($"Name: {product.Name}");
@@ -191,7 +194,7 @@ namespace StockFlow.CLI.Services
 
         public void LowStockReport(int threshold)
         {
-            if (_products.Count == 0)
+            if (ActiveProducts.Count() == 0)
             {
                 Console.WriteLine("No products available.");
                 return;
@@ -203,7 +206,7 @@ namespace StockFlow.CLI.Services
                 return;
             }
 
-            List<Product> lowStockProducts = [.. _products
+            List<Product> lowStockProducts = [.. ActiveProducts
                 .Where(p => p.Quantity <= threshold)];
 
             if (lowStockProducts.Count == 0)
@@ -230,7 +233,144 @@ namespace StockFlow.CLI.Services
             }
         }
 
-        private Product FindProductBySku(string sku)
+        public List<Product> SearchProducts(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return [];
+
+            List<Product> matchingProducts = [.. ActiveProducts
+                .Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                            p.SKU.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))];
+
+            return matchingProducts;
+        }
+
+        public void UpdateProduct(string sku, string name, decimal price)
+        {
+            try
+            {
+                Product product = FindProductBySku(sku);
+
+                product.UpdateDetails(name, price);
+           
+                _jsonFileService.SaveProducts(_products);
+                
+                Console.WriteLine($"Product '{product.Name}' updated successfully!");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error saving inventory data: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission error while saving data: {ex.Message}");
+            }
+        }
+
+        public void DisplayInventorySummary()
+        {
+            Console.WriteLine($"Total Products: {ActiveProducts.Count()}");
+            Console.WriteLine($"Total Units in Stock: {ActiveProducts.Sum(p => p.Quantity)}");
+            Console.WriteLine($"Total Stock Movements: {_stockMovements.Count}");
+            Console.WriteLine($"Total Stock In Movements: {_stockMovements.Count(m => m.MovementType == MovementType.In)}");
+            Console.WriteLine($"Total Stock Out Movements: {_stockMovements.Count(m => m.MovementType == MovementType.Out)}");
+            Console.WriteLine($"Total Stock Value: {ActiveProducts.Sum(p => p.Price * p.Quantity):C}");
+            Console.WriteLine("=================================");
+        }
+
+        public List<Product> SortProducts(int sortOption)
+        {
+            return sortOption switch
+            {
+                1 => [.. ActiveProducts.OrderBy(p => p.Name)],
+                2 => [.. ActiveProducts.OrderByDescending(p => p.Name)],
+                3 => [.. ActiveProducts.OrderBy(p => p.Price)],
+                4 => [.. ActiveProducts.OrderByDescending(p => p.Price)],
+                5 => [.. ActiveProducts.OrderBy(p => p.Quantity)],
+                6 => [.. ActiveProducts.OrderByDescending(p => p.Quantity)],
+                _ => throw new ArgumentException("Invalid sort option.", nameof(sortOption)),
+            };
+        }
+
+        public void DeleteProduct(string sku)
+        {
+            try
+            {
+                Product product = FindProductBySku(sku);
+
+                product.SoftDelete();
+                
+                _jsonFileService.SaveProducts(_products);
+                
+                Console.WriteLine($"Product '{product.Name}' deleted successfully!");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error saving inventory data: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission error while saving data: {ex.Message}");
+            }
+        }
+
+        public List<Product> GetDeletedProducts()
+        {
+            return [.. _products.Where(p => p.IsDeleted)];
+        }
+
+        public void RestoreProduct(string sku)
+        {
+            try
+            {
+                Product product = FindProductIncludingDeletedBySku(sku);
+
+                if (!product.IsDeleted)
+                {
+                    Console.WriteLine("This product is already active.");
+                    return;
+                }
+
+                product.Restore();
+
+                _jsonFileService.SaveProducts(_products);
+
+                Console.WriteLine($"Product '{product.Name}' restored successfully!");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error saving inventory data: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"Permission error while saving data: {ex.Message}");
+            }
+        }
+
+        public Product FindProductBySku(string sku)
+        {
+            return ActiveProducts.FirstOrDefault(p =>
+                string.Equals(p.SKU, sku, StringComparison.OrdinalIgnoreCase))
+                ?? throw new InvalidOperationException("Product not found.");
+        }
+
+        public Product FindProductIncludingDeletedBySku(string sku)
         {
             return _products.FirstOrDefault(p =>
                 string.Equals(p.SKU, sku, StringComparison.OrdinalIgnoreCase))

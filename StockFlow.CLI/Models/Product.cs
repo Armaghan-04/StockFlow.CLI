@@ -15,6 +15,8 @@ namespace StockFlow.CLI.Models
 
         public int Quantity { get; private set; }
 
+        public bool IsDeleted { get; private set; } = false;
+
         public Product(string name, string sku, decimal price, int quantity)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -36,7 +38,7 @@ namespace StockFlow.CLI.Models
         }
 
         [JsonConstructor]
-        public Product(Guid id, string name, string sku, decimal price, int quantity)
+        public Product(Guid id, string name, string sku, decimal price, int quantity, bool isDeleted)
         {
             if (id == Guid.Empty)
                 throw new ArgumentException("Product ID cannot be empty.", nameof(id));
@@ -58,6 +60,7 @@ namespace StockFlow.CLI.Models
             SKU = sku.Trim();
             Price = price;
             Quantity = quantity;
+            IsDeleted = isDeleted;
         }
 
         public void AddStock(int quantity)
@@ -77,6 +80,28 @@ namespace StockFlow.CLI.Models
                 throw new InvalidOperationException("Insufficient stock.");
 
             Quantity -= quantity;
+        }
+
+        public void UpdateDetails(string name, decimal price)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Product name is required.", nameof(name));
+
+            if (price <= 0)
+                throw new ArgumentException("Product price must be greater than zero.", nameof(price));
+
+            Name = name.Trim();
+            Price = price;
+        }
+
+        public void SoftDelete()
+        {
+            IsDeleted = true;
+        }
+
+        public void Restore()
+        {
+            IsDeleted = false;
         }
     }
 }
