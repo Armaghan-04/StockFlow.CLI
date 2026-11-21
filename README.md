@@ -6,6 +6,10 @@ The project was developed to practise C# fundamentals, object-oriented programmi
 
 Product prices and inventory values are represented in Pakistani Rupees (PKR).
 
+## Preview
+
+![StockFlow console application in use](docs/screenshots/stockflow-cli.png)
+
 ## Features
 
 - **Product management** — add, view, update, soft-delete, and restore products
@@ -31,6 +35,9 @@ Product prices and inventory values are represented in Pakistani Rupees (PKR).
 ```text
 StockFlow.CLI/
 ├── .gitignore                       # Ignores build output, IDE files, and secrets
+├── docs/                            # Project documentation
+│   └── screenshots/                 # README screenshots
+│       └── stockflow-cli.png
 ├── StockFlow.CLI.slnx               # Solution file
 └── StockFlow.CLI/                   # Main project
     ├── StockFlow.CLI.csproj         # Project file (.NET 10)
